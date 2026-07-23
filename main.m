@@ -158,7 +158,7 @@ C2025R2.epoch = 9425.7 * 86400;
 C2025R2.name = 'C-2025 R2';
 
 % ---- Select comet and enrich struct --------------------------
-selected_comet = Synthetic1;   % comet processed by the pipeline
+selected_comet = C2019U6;   % comet processed by the pipeline
 
 % Earth state at the encounter epoch defines the synodic frame orientation
 selected_comet.earth_state = cspice_spkezr('EARTH', selected_comet.epoch, 'ECLIPJ2000', 'NONE', 'SUN');
@@ -202,7 +202,7 @@ load('S_halo.mat');
 load('unstable_dir.mat');
 
 %% Plot the comet positions in the synodic plane
-comets = {C2023X1, C2013K1, C2019U6, C2024Y1, Synthetic1, Synthetic2, Synthetic3};  % comets to plot in the non-dimensional synodic frame
+comets = {C2019U6};  % comets to plot in the non-dimensional synodic frame
 
 plot_comets_synodic(comets, c.mu, 'PlotManifolds', true, ...
     'S_halo', S_halo, 'UnstableDir', unstable_dir, 'C', c);
@@ -325,6 +325,12 @@ refine_params.min_days_between  = min_days_between;
 % ---- Save the refinement parameters ----
 save(fullfile(run_dir, 'refine_params.mat'), 'refine_params');
 
+% Pass the run folder to the refinement so its intermediate exports
+% (out_cr3bp.mat, python_inputs.txt, python_inputs_serot.txt) are written
+% inside Results/<CometName>_runX instead of the project root. Set after the
+% save above so it is not stored in refine_params.mat.
+refine_params.run_dir = run_dir;
+
 N_front = numel(pareto_front.idx);
 
 refined_front(N_front) = struct( ...
@@ -336,8 +342,8 @@ refined_front(N_front) = struct( ...
     'success',        [], ...
     'err_msg',        '');
 
-for ii = 1:N_front
-%for ii = [1] % if specific solution refinement is preferred
+% for ii = 1:N_front
+for ii = [1] % if specific solution refinement is preferred
 
     k_orig = pareto_front.idx(ii);           % index in the original global_results
     best_i = pareto_front.sols{ii};          % solution (sorted by increasing TOF)

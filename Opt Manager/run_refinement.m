@@ -274,12 +274,22 @@ end
 
 out_cr3bp = variables_organizer(x_opt, k_vec, f_nodes, S_pre_inj_manual, ...
    target_position, epoch_comet_flyby, c);
-save("out_cr3bp.mat", "out_cr3bp")
+
+% Folder where the run outputs are collected (Results/<CometName>_runX); fall
+% back to the current directory if the caller did not provide one.
+if isfield(rp, 'run_dir') && ~isempty(rp.run_dir)
+    save_dir = rp.run_dir;
+else
+    save_dir = pwd;
+end
+
+save(fullfile(save_dir, "out_cr3bp.mat"), "out_cr3bp")
 
 info = verify_flyby_geometry(out_cr3bp, c);
-write_python_inputs(out_cr3bp, c)
-write_python_inputs_serot(out_cr3bp, c) 
-[h_min_earth, h_flyby, info] = check_altitude(out_cr3bp, c, 'S_halo', S_halo);
+write_python_inputs(out_cr3bp, c, fullfile(save_dir, 'python_inputs.txt'))
+write_python_inputs_serot(out_cr3bp, c, fullfile(save_dir, 'python_inputs_serot.txt'))
+% SaveBlender=false: the blender_input.json export is disabled.
+[h_min_earth, h_flyby, info] = check_altitude(out_cr3bp, c, 'S_halo', S_halo, 'SaveBlender', false);
 
 plot_from_state_vector_MS(x_opt, k_vec, f_nodes, S_traj_syn, c, target_position, epoch_comet_flyby, S_halo);
 
@@ -307,7 +317,7 @@ state_pre_tcm1 = S_back(end,:)';
 % ================================================================
 if rp.use_fast
     % Fast path: refinement_post_flyby
-    t_tcm2      = 5;   % [days] post flyby
+    t_tcm2      = 10;   % [days] post flyby
     tcm2_guess  = [0.001; 0.001; 0.001];
     x0_post     = [tcm2_guess; out_cr3bp.dsm2.dv.J2000_kms; out_cr3bp.dsm2.epoch/1e8];
 
@@ -316,7 +326,7 @@ if rp.use_fast
 
 else
     % Slow path: refinement_global_post_flyby + MBH
-    t_tcm2 = 3;   % [days] post flyby                               !!!!!!!!!!!!!!!! note: was 10 days !!!!!!
+    t_tcm2 = 15;   % [days] post flyby                               !!!!!!!!!!!!!!!! note: was 10 days !!!!!!
     [~, S_post] = ode45(@(t,s) NBODY_J2000(t, s, epoch_flyby_ref, c), ...
         [0, t_tcm2*86400], out_cr3bp.flyby.state_post.J2000(:), opt_prop);
     S_post_tcm2 = S_post(end,:)';

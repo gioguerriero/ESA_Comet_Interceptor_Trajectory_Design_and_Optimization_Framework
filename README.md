@@ -2,7 +2,7 @@
 
 **Trajectory design and optimization for the ESA Comet Interceptor mission, exploiting a lunar gravity assist to boost Earth escape from a Sun–Earth L2 halo orbit.**
 
-This repository contains the MATLAB implementation of the *lunar-flyby* departure pipeline described in the study *"Using Lunar Gravity Assists to Boost Earth Escape for the ESA Comet Interceptor Mission"* (Guerriero & Sánchez, ISAE-SUPAERO / CNES). Given the orbital state of a target comet, the framework searches for low-cost, fast transfer trajectories that leave a quasi-halo parking orbit, coast along the unstable manifold, perform an instantaneous lunar swingby, and inject into a heliocentric leg toward the comet — while jointly optimising propellant cost (ΔV) and time of flight (ToF).
+This repository contains the MATLAB implementation of the *lunar-flyby* departure pipeline described in the study *"Using Lunar Gravity Assists to Boost Earth Escape for the ESA Comet Interceptor Mission"* (Guerriero, Ramanantsoavina & Sánchez, ISAE-SUPAERO. Paper available at: [link](https://www.researchgate.net/publication/407045425_Using_Lunar_Gravity_Assists_to_Boost_Earth_Escape_for_the_ESA_Comet_Interceptor_Mission)). Given the orbital state of a target comet, the framework searches for low-cost, fast transfer trajectories that leave a quasi-halo parking orbit, coast along the unstable manifold, perform an instantaneous lunar swingby, and inject into a heliocentric leg toward the comet — while jointly optimising propellant cost (ΔV) and time of flight (ToF).
 
 ---
 
